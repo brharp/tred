@@ -27,6 +27,8 @@
 
 (defvar *point* *document*)
 
+(defvar *buffer* nil)
+
 (defun ins ()
   (let ((new (cons (read) *point*)))
     (setq *document* (subst new *point* *document*))
@@ -46,6 +48,14 @@
   (let ((new (cons (read) (cdr *point*))))
     (setq *document* (subst new *point* *document*)
           *point* new)))
+
+(defun yank ()
+  (setq *buffer* *point*))
+
+(defun pull ()
+  (let ((new (cons *buffer* (cdr *point*))))
+    (setq *document* (subst new (cdr *point*) *document*))
+    (setq *point* new)))
 
 (defun move-down ()
     (if (consp (car *point*))
@@ -118,9 +128,11 @@
             ((#\j) (move-down))
             ((#\k) (move-up))
             ((#\l) (move-next))
+            ((#\p) (pull))
             ((#\q) (return))
             ((#\r) (rep))
-            ((#\x) (del))))))
+            ((#\x) (del))
+            ((#\y) (yank))))))
 
 (run)
 
